@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Block Stacker</title>
+<style>
+  body { font-family: sans-serif; text-align: center; }
+  #board { display: inline-block; margin-top: 20px; }
+  .row { height: 30px; }
+  .cell {
+    width: 30px;
+    height: 30px;
+    border: 1px solid #555;
+    display: inline-block;
+    box-sizing: border-box;
+  }
+  .filled { background-color: #333; }
+  #score { margin-top: 10px; }
+  #message { margin-top: 10px; font-weight: bold; }
+</style>
+</head>
+<body>
+<h1>Block Stacker</h1>
+<div id="board"></div>
+<div id="score">Score: 0</div>
+<div id="message"></div>
+<script>
+const width = 10;
+const height = 10;
+let score = 0;
+let board = [];
+const boardEl = document.getElementById('board');
+const scoreEl = document.getElementById('score');
+const messageEl = document.getElementById('message');
+
+function init() {
+  board = Array.from({length: height}, () => Array(width).fill('.'));
+  renderBoard();
+}
+
+function renderBoard() {
+  boardEl.innerHTML = '';
+  for (let r = 0; r < height; r++) {
+    const rowEl = document.createElement('div');
+    rowEl.className = 'row';
+    for (let c = 0; c < width; c++) {
+      const cellEl = document.createElement('div');
+      cellEl.className = 'cell';
+      if (board[r][c] === '#') cellEl.classList.add('filled');
+      cellEl.dataset.column = c;
+      cellEl.addEventListener('click', () => dropBlock(c));
+      rowEl.appendChild(cellEl);
+    }
+    boardEl.appendChild(rowEl);
+  }
+}
+
+function dropBlock(column) {
+  for (let r = height - 1; r >= 0; r--) {
+    if (board[r][column] === '.') {
+      board[r][column] = '#';
+      score++;
+      scoreEl.textContent = 'Score: ' + score;
+      renderBoard();
+      if (isBoardFull()) {
+        messageEl.textContent = 'Board is full! Game over.';
+        disableBoard();
+      }
+      return;
+    }
+  }
+  messageEl.textContent = 'Column full! Game over.';
+  disableBoard();
+}
+
+function isBoardFull() {
+  return board[0].every(cell => cell === '#');
+}
+
+function disableBoard() {
+  const cells = document.querySelectorAll('.cell');
+  cells.forEach(cell => cell.replaceWith(cell.cloneNode(true)));
+}
+
+init();
+</script>
+</body>
+</html>
