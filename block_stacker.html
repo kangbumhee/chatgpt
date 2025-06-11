@@ -5,17 +5,26 @@
 <title>Block Stacker</title>
 <style>
   body { font-family: sans-serif; text-align: center; }
-  #board { display: inline-block; margin-top: 20px; }
-  .row { height: 30px; }
+  #board {
+    display: grid;
+    grid-template-columns: repeat(10, 30px);
+    gap: 2px;
+    margin: 20px auto;
+    width: max-content;
+  }
   .cell {
     width: 30px;
     height: 30px;
     border: 1px solid #555;
-    display: inline-block;
+    background: #eee;
     box-sizing: border-box;
+    cursor: pointer;
   }
-  .filled { background-color: #333; }
+  .filled {
+    background-color: #333;
+  }
   #score { margin-top: 10px; }
+  #controls { margin-top: 10px; }
   #message { margin-top: 10px; font-weight: bold; }
 </style>
 </head>
@@ -23,6 +32,7 @@
 <h1>Block Stacker</h1>
 <div id="board"></div>
 <div id="score">Score: 0</div>
+<div id="controls"><button id="restart">Restart</button></div>
 <div id="message"></div>
 <script>
 const width = 10;
@@ -32,26 +42,27 @@ let board = [];
 const boardEl = document.getElementById('board');
 const scoreEl = document.getElementById('score');
 const messageEl = document.getElementById('message');
+const restartBtn = document.getElementById('restart');
 
 function init() {
   board = Array.from({length: height}, () => Array(width).fill('.'));
+  score = 0;
+  scoreEl.textContent = 'Score: ' + score;
+  messageEl.textContent = '';
+  boardEl.style.pointerEvents = 'auto';
   renderBoard();
 }
 
 function renderBoard() {
   boardEl.innerHTML = '';
   for (let r = 0; r < height; r++) {
-    const rowEl = document.createElement('div');
-    rowEl.className = 'row';
     for (let c = 0; c < width; c++) {
       const cellEl = document.createElement('div');
       cellEl.className = 'cell';
       if (board[r][c] === '#') cellEl.classList.add('filled');
-      cellEl.dataset.column = c;
       cellEl.addEventListener('click', () => dropBlock(c));
-      rowEl.appendChild(cellEl);
+      boardEl.appendChild(cellEl);
     }
-    boardEl.appendChild(rowEl);
   }
 }
 
@@ -78,10 +89,10 @@ function isBoardFull() {
 }
 
 function disableBoard() {
-  const cells = document.querySelectorAll('.cell');
-  cells.forEach(cell => cell.replaceWith(cell.cloneNode(true)));
+  boardEl.style.pointerEvents = 'none';
 }
 
+restartBtn.addEventListener('click', init);
 init();
 </script>
 </body>

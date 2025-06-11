@@ -14,4 +14,4 @@ Choose a column number to drop a block into that column. The block will fall unt
 
 ## HTML Version
 
-Open `block_stacker.html` in any modern browser. Click on a column to drop a block. When the board is full, the game will end.
+Open `block_stacker.html` in any modern browser. The UI lets you drop blocks by clicking a column. When the board is full, use the Restart button to play again.
